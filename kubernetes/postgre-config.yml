@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgre-config
+  namespace: movie-space
+data:
+  postgre.conf: |
+    max_connections = 100
+    shared_buffers = 128MB

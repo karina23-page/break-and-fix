@@ -1,0 +1,85 @@
+- hosts: movies
+  become: yes
+
+  tasks:
+
+    - name: update apt
+      apt: 
+        update_cache: yes
+
+    - name: create app directory 
+      file:
+        path: /home/ubuntu/movie
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+
+    - name: create monitoring directory 
+      file:
+        path: /home/ubuntu/movie/monitoring
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+
+    - name: create k8s directory 
+      file:
+        path: /home/ubuntu/movie/kubernetes
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+
+    - name: copy monitoring files
+      copy:
+        src: /home/carrie/movies/monitoring/
+        dest: /home/ubuntu/movie/monitoring/
+
+    - name: copy k8s files
+      copy:
+        src: /home/carrie/movies/kubernetes/
+        dest: /home/ubuntu/movie/kubernetes/
+
+    - name: Install K3s
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s - \
+          --write-kubeconfig-mode 644 \
+          --tls-san {{ ansible_host }}
+
+    - name: install helm
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
+
+    - name: install prometheus and grafana
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        bash install-monitoring.sh
+      args:
+        chdir: /home/ubuntu/movie/monitoring
+
+    - name: Deploy kubernetes manifests
+      ansible.builtin.shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        until kubectl get namespace movie-space >/dev/null 2>&1
+        do
+            sleep 1
+        done
+        kubectl apply -f .
+      args:
+        chdir: /home/ubuntu/movie/kubernetes
+
+    - name: Get pods
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl get pods -n movie-space
+      register: pods
+
+    - debug:
+        var: pods.stdout
+
+    
+
+

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="movie-hero"
+style="background-image:url('{{ movie.background }}')">
+
+    <a href="/" class="home-button">
+
+        ← Home
+
+    </a>
+
+    <div class="movie-header">
+
+        <h1>{{ movie.title }}</h1>
+
+    </div>
+
+</section>
+
+
+
+<div class="movie-layout">
+
+    <aside class="floating-sidebar">
+
+        <div class="info-box">
+
+            <h3>🎵 Soundtrack</h3>
+
+            <p>{{ movie.soundtrack }}</p>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h3>🍿 Snack Pairing</h3>
+
+            <p>{{ movie.snack }}</p>
+
+        </div>
+
+        <div class="info-box">
+            <a
+            href="/movie/{{ movie.id }}/add-scene"
+            class="add-scene-button">
+
+                ➕ Add Scene
+
+            </a>
+        </div>
+
+    </aside>
+
+
+
+    <main class="movie-content">
+
+        <section class="main-thoughts">
+
+            <h2>My Thoughts</h2>
+
+            <p>
+
+                {{ movie.main_thoughts }}
+
+            </p>
+
+        </section>
+
+
+
+       {% for scene in scenes %}
+
+        <section class="scene-card">
+
+            <img
+                src="{{ scene.image }}"
+                class="scene-image">
+
+            <div class="scene-text">
+
+                <h2>{{ scene.title }}</h2>
+
+                <p>{{ scene.description }}</p>
+
+                <a
+                    href="/scene/{{ scene.id }}/delete"
+                    class="delete-scene-button">
+
+                    🗑 Delete Scene
+
+                </a>
+
+            </div>
+
+        </section>
+
+        {% endfor %}
+    </main>
+
+</div>
+
+{% endblock %}

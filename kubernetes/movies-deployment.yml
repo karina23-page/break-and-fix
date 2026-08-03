@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+   name: movie-app
+   namespace: movie-space
+   
+spec:
+    replicas: 2 
+
+    selector:
+       matchLabels: 
+          app: movie-app
+
+
+    template:
+      metadata:
+        labels:
+          app: movie-app
+
+      spec:
+        containers:
+          - name: movie-app
+
+            image: tprff2301/movie-app:latest
+
+            ports: 
+            - containerPort: 5000
+
+            envFrom:
+            - configMapRef: 
+                name: movie-conf
+            - secretRef:
+                name: postgre-secret
+
+

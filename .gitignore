@@ -1,0 +1,36 @@
+# Python
+venv/
+.env
+__pycache__/
+*.pyc
+instance/
+.mypy_cache/
+.pytest_cache/
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+terraform.tfvars
+*.tfvars
+
+
+# Ansible
+*.retry
+*.pub
+
+# Logs
+*.log
+
+# Jenkins
+secrets/
