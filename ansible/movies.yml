@@ -71,6 +71,22 @@
       args:
         chdir: /home/ubuntu/movie/kubernetes
 
+    - name: Wait for movie deployment
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl rollout status deployment/movie-app \
+          -n movie-space \
+          --timeout=180s
+
+    - name: Seed example movie
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
+        kubectl exec \
+          deployment/movie-app \
+          -n movie-space \
+          -- python3 seed_movies.py
+
     - name: Get pods
       shell: |
         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml

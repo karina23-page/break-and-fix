@@ -2,103 +2,58 @@
 
 {% block content %}
 
-<section class="movie-hero"
-style="background-image:url('{{ movie.background }}')">
-
+<section class="movie-hero" style="background-image:url('{{ movie.background }}')">
     <a href="/" class="home-button">
-
         ← Home
-
     </a>
-
     <div class="movie-header">
-
         <h1>{{ movie.title }}</h1>
-
     </div>
-
 </section>
-
-
 
 <div class="movie-layout">
 
+    <!-- SIDEBAR (Button removed from here) -->
     <aside class="floating-sidebar">
-
         <div class="info-box">
-
             <h3>🎵 Soundtrack</h3>
-
             <p>{{ movie.soundtrack }}</p>
-
         </div>
 
-
         <div class="info-box">
-
             <h3>🍿 Snack Pairing</h3>
-
             <p>{{ movie.snack }}</p>
-
         </div>
-
-        <div class="info-box">
-            <a
-            href="/movie/{{ movie.id }}/add-scene"
-            class="add-scene-button">
-
-                ➕ Add Scene
-
-            </a>
-        </div>
-
     </aside>
 
-
-
+    <!-- MAIN CONTENT -->
     <main class="movie-content">
 
         <section class="main-thoughts">
-
             <h2>My Thoughts</h2>
-
-            <p>
-
-                {{ movie.main_thoughts }}
-
-            </p>
-
+            <p>{{ movie.main_thoughts }}</p>
         </section>
 
-
-
-       {% for scene in scenes %}
-
+        {% for scene in scenes %}
         <section class="scene-card">
-
-            <img
-                src="{{ scene.image }}"
-                class="scene-image">
-
+            <img src="{{ scene.image }}" class="scene-image">
             <div class="scene-text">
-
                 <h2>{{ scene.title }}</h2>
-
                 <p>{{ scene.description }}</p>
-
-                <a
-                    href="/scene/{{ scene.id }}/delete"
-                    class="delete-scene-button">
-
+                <a href="/scene/{{ scene.id }}/delete" class="delete-scene-button">
                     🗑 Delete Scene
-
                 </a>
-
             </div>
-
         </section>
-
         {% endfor %}
+
+        <!-- ADD SCENE BUTTON AT THE BOTTOM -->
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="/movie/{{ movie.id }}/add-scene" class="add-scene-button">
+                ➕ Add Scene
+            </a>
+        </div>
+
     </main>
 
 </div>
