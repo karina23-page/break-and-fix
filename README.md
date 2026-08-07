@@ -12,6 +12,29 @@
 
 ---
 
+## 📸 Demo & Screenshots
+
+### 🌐 Web Application Interface
+| Main Movies Page | Movie Details & Scenes |
+| :---: | :---: |
+| ![Main Interface](docs/screenshots/demo1.jpg) | ![Movie Details](docs/screenshots/demo2.jpg) |
+
+---
+
+### 🚀 CI/CD Pipeline (Jenkins)
+| Automated Pipeline Build |
+| :---: |
+| ![Jenkins Pipeline](docs/screenshots/cicd.jpg) |
+
+---
+
+### 📊 Observability & Monitoring
+| Grafana Dashboard |
+| :---: | :---: |
+| ![Grafana Dashboard](docs/screenshots/grafana.jpg) | 
+
+---
+
 ## 🚀 Features
 
 - **Film Management:** Add, review, and delete movies with custom ratings.
@@ -86,9 +109,15 @@ The cluster is managed via K3s and utilizes the following native Kubernetes reso
 
 ## 📊 Observability & Monitoring
 
-The observability suite is deployed via **Helm**:
-- **Prometheus:** Metrics scraping using `prometheus_flask_exporter`.
-- **Grafana:** Visual dashboards tracking HTTP requests, latency, memory usage, and cluster health.
+The observability stack is deployed via **Helm** in the `monitoring` namespace and exposed externally via `NodePort`:
+
+- **Grafana Dashboard:**  
+  - **URL:** `http://<K3S_NODE_PUBLIC_IP>:30080`
+  - Used for visual monitoring of application traffic, HTTP latency, and cluster node health.
+
+- **Prometheus Metrics:**  
+  - **URL:** `http://<K3S_NODE_PUBLIC_IP>:30090`
+  - Collects and scrapes real-time application metrics exported via `prometheus_flask_exporter`.
 
 ---
 
