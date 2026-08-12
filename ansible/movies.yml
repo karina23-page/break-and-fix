@@ -33,12 +33,12 @@
 
     - name: copy monitoring files
       copy:
-        src: /home/carrie/movies/monitoring/
+        src: /home/carrie/break-and-fix/monitoring/
         dest: /home/ubuntu/movie/monitoring/
 
     - name: copy k8s files
       copy:
-        src: /home/carrie/movies/kubernetes/
+        src: /home/carrie/break-and-fix/kubernetes/
         dest: /home/ubuntu/movie/kubernetes/
 
     - name: Install K3s
@@ -63,10 +63,7 @@
     - name: Deploy kubernetes manifests
       ansible.builtin.shell: |
         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-        until kubectl get namespace movie-space >/dev/null 2>&1
-        do
-            sleep 1
-        done
+        kubectl create namespace movie-space --dry-run=client -o yaml | kubectl apply -f -
         kubectl apply -f .
       args:
         chdir: /home/ubuntu/movie/kubernetes
