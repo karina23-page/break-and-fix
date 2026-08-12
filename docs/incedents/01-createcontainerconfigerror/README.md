@@ -112,7 +112,7 @@ The `CreateContainerConfigError` was resolved.
 
 ### 📸 Screenshot: Pod Running Successfully
 
-![Movie app pod running successfully](error4.png)
+![Movie app pod running successfully](error4.jpg)
 
 
 
