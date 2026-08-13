@@ -6,4 +6,6 @@ metadata:
 data:
   postgre.conf: |
     max_connections = 100
-    shared_buffers = 128MB
+    shared_buffers = 256MB       # Increased from 128MB
+    work_mem = 16MB              # Allows faster in-memory sorting per operation
+    maintenance_work_mem = 64MB  # Helps index creation during seeding
