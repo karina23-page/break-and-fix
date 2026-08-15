@@ -5,6 +5,8 @@ from prometheus_flask_exporter import PrometheusMetrics
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 
+# Add this near the top of app.py
+raise RuntimeError("v2.0 Production Crash: Unhandled Migration Error")
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
 
@@ -232,6 +234,7 @@ def movie(slug):
 
 with app.app_context():
     db.create_all()
+
 
 
 if __name__ == "__main__":
