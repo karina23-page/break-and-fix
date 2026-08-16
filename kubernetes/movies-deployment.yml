@@ -29,17 +29,17 @@ spec:
 
             readinessProbe:
               httpGet:
-                path: /nonexistent-ready
+                path: /health
                 port: 5000
               initialDelaySeconds: 5
               periodSeconds: 5
             livenessProbe:
               httpGet:
-                path: /nonexistent-live
+                path: /health
                 port: 5000
               initialDelaySeconds: 10
               periodSeconds: 5
-              
+
             envFrom:
             - configMapRef: 
                 name: movie-conf
