@@ -4,9 +4,9 @@ import os
 from prometheus_flask_exporter import PrometheusMetrics 
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
+from sqlalchemy import text
 
-# Add this near the top of app.py
-raise RuntimeError("v2.0 Production Crash: Unhandled Migration Error")
+
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
 
@@ -68,7 +68,14 @@ class Scene(db.Model):
     image = db.Column(db.String(255))
     description = db.Column(db.Text)
 
-
+@app.route('/health')
+def health_check():
+    try:
+        db.session.execute(text('SELECT 1'))
+        return "Healthy", 200
+    except Exception as e:
+        return f"Unhealthy: {str(e)}", 500
+    
 @app.route("/")
 def home():
 

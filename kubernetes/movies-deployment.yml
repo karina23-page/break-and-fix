@@ -27,6 +27,19 @@ spec:
             ports: 
             - containerPort: 5000
 
+            readinessProbe:
+              httpGet:
+                path: /nonexistent-ready
+                port: 5000
+              initialDelaySeconds: 5
+              periodSeconds: 5
+            livenessProbe:
+              httpGet:
+                path: /nonexistent-live
+                port: 5000
+              initialDelaySeconds: 10
+              periodSeconds: 5
+              
             envFrom:
             - configMapRef: 
                 name: movie-conf
