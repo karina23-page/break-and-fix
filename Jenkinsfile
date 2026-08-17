@@ -27,9 +27,16 @@ pipeline {
         
         stage('Security Scan') {
             steps {
-        sh 'trivy image --severity CRITICAL --exit-code 1 tprff2301/movie-app:latest'
-    }
-}
+                sh '''
+                docker run --rm \
+                    -v /var/run/docker.sock:/var/run/docker.sock \
+                    aquasec/trivy:latest image \
+                    --severity CRITICAL \
+                    --exit-code 1 \
+                    tprff2301/movie-app:9
+                '''
+            }
+        }
         stage('Push') {
 
             steps {
