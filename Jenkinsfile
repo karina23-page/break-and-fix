@@ -12,6 +12,7 @@ pipeline {
 
     stages {
 
+
         stage('Build') {
 
             steps {
@@ -23,7 +24,12 @@ pipeline {
                 '''
             }
         }
-
+        
+        stage('Security Scan') {
+            steps {
+        sh 'trivy image --severity CRITICAL --exit-code 1 tprff2301/movie-app:latest'
+    }
+}
         stage('Push') {
 
             steps {
