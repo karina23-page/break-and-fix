@@ -33,7 +33,7 @@ pipeline {
                     aquasec/trivy:latest image \
                     --severity CRITICAL \
                     --exit-code 1 \
-                    tprff2301/movie-app:9
+                    tprff2301/movie-app:${BUILD_NUMBER}
                 '''
             }
         }
