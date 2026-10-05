@@ -8,5 +8,3 @@ helm upgrade --install monitoring \
   -f values.yml \
   -n monitoring \
   --create-namespace \
-  --wait \
-  --timeout 10m

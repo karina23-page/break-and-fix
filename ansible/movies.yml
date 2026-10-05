@@ -35,6 +35,7 @@
       copy:
         src: /home/carrie/break-and-fix/monitoring/
         dest: /home/ubuntu/movie/monitoring/
+        mode: '0755'
 
     - name: copy k8s files
       copy:
@@ -56,9 +57,17 @@
     - name: install prometheus and grafana
       shell: |
         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-        bash install-monitoring.sh
+        ./install-monitoring.sh
       args:
         chdir: /home/ubuntu/movie/monitoring
+        
+    - name: Wait for Prometheus server to be ready
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl rollout status deployment/monitoring-kube-prometheus-st-operator \
+          -n monitoring \
+          --timeout=300s
+
 
     - name: Deploy kubernetes manifests
       ansible.builtin.shell: |

@@ -40,7 +40,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "jenkins" {
   ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t3.small"
+  instance_type          = "t3.small" 
 
   key_name = var.key_name
 
@@ -60,3 +60,4 @@ resource "aws_instance" "jenkins" {
 resource "aws_eip" "jenkins"{
     instance = aws_instance.jenkins.id
 }
+
