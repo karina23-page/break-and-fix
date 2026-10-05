@@ -60,14 +60,6 @@
         ./install-monitoring.sh
       args:
         chdir: /home/ubuntu/movie/monitoring
-        
-    - name: Wait for Prometheus server to be ready
-      shell: |
-        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-        kubectl rollout status deployment/monitoring-kube-prometheus-st-operator \
-          -n monitoring \
-          --timeout=300s
-
 
     - name: Deploy kubernetes manifests
       ansible.builtin.shell: |
