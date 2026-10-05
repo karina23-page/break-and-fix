@@ -1,5 +1,5 @@
 [movies]
-<place the IP> ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/movies
+16.171.106.68 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/movies
 
 [jenkins]
-<place the IP> ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/movies
+51.20.209.117 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/movies
