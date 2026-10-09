@@ -9,4 +9,4 @@ helm upgrade --install monitoring \
   -n monitoring \
   --create-namespace \
   --wait \
-  --timeout 1m
+  --timeout 10m
