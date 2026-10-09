@@ -10,8 +10,7 @@ The infrastructure is deployed using Terraform and Ansible on AWS. The applicati
 
 The main goal is to understand how infrastructure and application failures occur, identify their root causes, implement fixes, and verify that the system is working correctly.
 
-**This is an intentionally break-and-fix project.** Failures are introduced deliberately to practice systematic troubleshooting rather than simply following deployment tutorials.
-
+**This is an intentionally break-and-fix project.** Failures are introduced deliberately to practice systematic troubleshooting.
 ## 🏗️ Architecture
 
 The project includes the following components:
@@ -179,13 +178,13 @@ cd ../ansible
 Install and configure Jenkins:
 
 ```bash
-ansible-playbook -i inventory.txt jenkins.yml
+ansible-playbook -i templates/inventory.txt jenkins.yml
 ```
 
 Provision Docker and K3s on the movie application server:
 
 ```bash
-ansible-playbook -i inventory.txt movies.yml
+ansible-playbook -i templates/inventory.txt movies.yml
 ```
 
 </details>
@@ -416,11 +415,6 @@ Each incident has its own documentation containing the observed symptoms, diagno
 - Detecting configuration drift and recovering from failed deployments.
 - Verifying fixes through logs, Kubernetes resources, and monitoring tools.
 
-## 💡 Project Philosophy
-
-The objective is not to create failures randomly, but to understand how to diagnose them methodically.
-
-Each incident follows the same process:
 
 **Observe → Investigate → Identify the Root Cause → Fix → Verify**
 
