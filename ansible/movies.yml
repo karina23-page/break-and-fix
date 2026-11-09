@@ -3,44 +3,20 @@
 
   tasks:
 
-    - name: update apt
-      apt: 
+    - name: Update apt and install git
+      apt:
         update_cache: yes
+        name: git
+        state: present
 
-    - name: create app directory 
-      file:
-        path: /home/ubuntu/movie
-        state: directory
-        owner: ubuntu
-        group: ubuntu
-        mode: "0755"
-
-    - name: create monitoring directory 
-      file:
-        path: /home/ubuntu/movie/monitoring
-        state: directory
-        owner: ubuntu
-        group: ubuntu
-        mode: "0755"
-
-    - name: create k8s directory 
-      file:
-        path: /home/ubuntu/movie/kubernetes
-        state: directory
-        owner: ubuntu
-        group: ubuntu
-        mode: "0755"
-
-    - name: copy monitoring files
-      copy:
-        src: /home/carrie/break-and-fix/monitoring/
-        dest: /home/ubuntu/movie/monitoring/
-        mode: '0755'
-
-    - name: copy k8s files
-      copy:
-        src: /home/carrie/break-and-fix/kubernetes/
-        dest: /home/ubuntu/movie/kubernetes/
+    - name: Clone latest Movie Journal repository
+      become_user: ubuntu
+      ansible.builtin.git:
+        repo: "https://github.com/karina23-page/movie-journal"
+        dest: /home/ubuntu/movie
+        version: main
+        update: yes
+        force: yes
 
     - name: Install K3s
       shell: |
@@ -48,13 +24,20 @@
           --write-kubeconfig-mode 644 \
           --tls-san {{ ansible_host }}
 
-    - name: install helm
+    - name: Install helm
       shell: |
         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
       args:
         creates: /usr/local/bin/helm
+    
+    - name: Make monitoring script executable
+      ansible.builtin.file:
+        path: /home/ubuntu/movie/monitoring/install-monitoring.sh
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
 
-    - name: install prometheus and grafana
+    - name: Install prometheus and grafana
       shell: |
         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
         ./install-monitoring.sh
@@ -79,7 +62,6 @@
     - name: Seed example movie
       shell: |
         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-
         kubectl exec \
           deployment/movie-app \
           -n movie-space \
@@ -93,7 +75,3 @@
 
     - debug:
         var: pods.stdout
-
-    
-
-

@@ -6,10 +6,8 @@ from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from sqlalchemy import text
 
-
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
-
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
@@ -243,9 +241,8 @@ with app.app_context():
     db.create_all()
 
 
-
 if __name__ == "__main__":
     app.run(
     host="0.0.0.0",
     port=5000,
-    debug=True)
+    debug=False)
