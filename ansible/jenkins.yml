@@ -1,0 +1,153 @@
+---
+- hosts: jenkins
+  become: yes
+
+  tasks:
+
+    ##########################################################
+    # Update packages
+    ##########################################################
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    ##########################################################
+    # Required packages
+    ##########################################################
+
+    - name: Install packages
+      apt:
+        name:
+          - openjdk-21-jdk
+          - docker.io
+          - git
+          - curl
+          - unzip
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+        state: present
+
+    ##########################################################
+    # Docker
+    ##########################################################
+
+    - name: Enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    ##########################################################
+    # Install kubectl
+    ##########################################################
+
+    - name: Create keyrings directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download kubectl key
+      shell: |
+        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+    - name: Add kubectl repository
+      shell: |
+        echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' > /etc/apt/sources.list.d/kubernetes.list
+      args:
+        creates: /etc/apt/sources.list.d/kubernetes.list
+
+    - name: Update repositories
+      apt:
+        update_cache: yes
+
+    - name: Install kubectl
+      apt:
+        name: kubectl
+        state: present
+
+    ##########################################################
+    # Jenkins Repository
+    ##########################################################
+
+    - name: Download Jenkins 2026 key
+      get_url:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+        dest: /etc/apt/keyrings/jenkins-keyring.asc
+        mode: '0644'
+
+    - name: Add Jenkins repository
+      copy:
+        dest: /etc/apt/sources.list.d/jenkins.list
+        content: |
+          deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/
+        mode: '0644'
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    ##########################################################
+    # Jenkins
+    ##########################################################
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Start Jenkins
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    ##########################################################
+    # Docker permissions
+    ##########################################################
+
+    - name: Add jenkins user to docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+
+    ##########################################################
+    # Create kubeconfig directory
+    ##########################################################
+
+    - name: Create .kube directory
+      file:
+        path: /var/lib/jenkins/.kube
+        state: directory
+        owner: jenkins
+        group: jenkins
+        mode: '0700'
+
+
+    ##########################################################
+    # Restart Jenkins
+    ##########################################################
+
+    - name: Restart Jenkins
+      service:
+        name: jenkins
+        state: restarted
+
+    ##########################################################
+    # Verify
+    ##########################################################
+
+    - name: Check Jenkins status
+      shell: systemctl is-active jenkins
+      register: jenkins_status
+      changed_when: false
+
+    - name: Print Jenkins status
+      debug:
+        var: jenkins_status.stdout

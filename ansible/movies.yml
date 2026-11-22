@@ -1,0 +1,77 @@
+- hosts: movies
+  become: yes
+
+  tasks:
+
+    - name: Update apt and install git
+      apt:
+        update_cache: yes
+        name: git
+        state: present
+
+    - name: Clone latest Movie Journal repository
+      become_user: ubuntu
+      ansible.builtin.git:
+        repo: "https://github.com/karina23-page/movie-journal"
+        dest: /home/ubuntu/movie
+        version: main
+        update: yes
+        force: yes
+
+    - name: Install K3s
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s - \
+          --write-kubeconfig-mode 644 \
+          --tls-san {{ ansible_host }}
+
+    - name: Install helm
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
+    
+    - name: Make monitoring script executable
+      ansible.builtin.file:
+        path: /home/ubuntu/movie/monitoring/install-monitoring.sh
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Install prometheus and grafana
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        ./install-monitoring.sh
+      args:
+        chdir: /home/ubuntu/movie/monitoring
+
+    - name: Deploy kubernetes manifests
+      ansible.builtin.shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl create namespace movie-space --dry-run=client -o yaml | kubectl apply -f -
+        kubectl apply -f .
+      args:
+        chdir: /home/ubuntu/movie/kubernetes
+
+    - name: Wait for movie deployment
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl rollout status deployment/movie-app \
+          -n movie-space \
+          --timeout=180s
+
+    - name: Seed example movie
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl exec \
+          deployment/movie-app \
+          -n movie-space \
+          -- python3 seed_movies.py
+
+    - name: Get pods
+      shell: |
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl get pods -n movie-space
+      register: pods
+
+    - debug:
+        var: pods.stdout

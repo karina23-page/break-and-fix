@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <h1>Add New Movie 🎬</h1>
+
+    <p class="form-subtitle">
+
+        Build your own movie diary.
+
+    </p>
+
+    <form
+    method="POST"
+    enctype="multipart/form-data">
+
+        <label>Movie Title</label>
+
+        <input
+            type="text"
+            name="title"
+            required>
+
+        <label>Poster Image</label>
+
+        <input
+            type="file"
+            name="poster"
+            accept="image/*">
+
+        <label>Background Image</label>
+
+        <input
+            type="file"
+            name="background"
+            accept="image/*">
+
+        <label>Short Description</label>
+
+        <textarea
+            name="description"></textarea>
+
+        <label>Main Thoughts</label>
+
+        <textarea
+            name="thoughts"
+            rows="8"></textarea>
+
+        <label>Soundtrack</label>
+
+        <input
+            type="text"
+            name="soundtrack">
+
+        <label>Snack Pairing</label>
+
+        <input
+            type="text"
+            name="snack">
+
+        <button
+            type="submit"
+            class="primary-button">
+
+            Save Movie
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

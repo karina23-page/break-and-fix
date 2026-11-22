@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero">
+
+    <p class="hero-text">
+        Build a custom archive of the movies you watch. Record your personal feedback, save iconic scenes and songs, and curate a collection built around your unique perspective.
+    </p>
+
+</section>
+
+
+<section class="movies">
+
+    <div class="movies-header">
+
+        <a href="/add" class="primary-button">
+
+            ➕ Add New Movie
+
+        </a>
+
+    </div>
+
+    <div class="movie-grid">
+
+        {% for movie in movies %}
+
+        <div class="movie-card">
+
+            <a href="/movie/{{ movie.slug }}">
+
+                <img src="{{ movie.poster }}">
+
+                <h3>{{ movie.title }}</h3>
+                <p>{{ movie.short_description }}</p>
+
+            </a>
+
+            <div class="movie-actions">
+
+                <a href="/delete/{{ movie.id }}"
+                class="delete-button">
+
+                    🗑 Delete
+
+                </a>
+
+             </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: movie-app-monitor
+  namespace: movie-space
+  labels:
+    release: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - movie-space
+  selector:
+    matchLabels:
+      app: movie-app
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+
+#kind: ServiceMonitor	Creates a monitoring configuration for Prometheus
+#namespace: movie-space	Places the resource in your application's namespace
+#release: monitoring	Matches the label selector in your Prometheus configuration
+#namespaceSelector	Tells the monitor to find the Service in movie-space
+#selector.matchLabels	Finds the Service labelled app: movie-app
+#port: http	Uses the named port we just added
+#path: /metrics	Collects metrics from your Flask exporter
+#interval: 30s	Scrapes the application every 30 seconds
